@@ -4,6 +4,7 @@ import com.buuz135.functionalstorage.FunctionalStorage;
 import com.buuz135.functionalstorage.block.tile.ControllableDrawerTile;
 import com.buuz135.functionalstorage.block.tile.DrawerControllerTile;
 import com.buuz135.functionalstorage.block.tile.EnderDrawerTile;
+import com.buuz135.functionalstorage.block.tile.StorageControllerTile;
 import com.buuz135.functionalstorage.inventory.EnderInventoryHandler;
 import com.buuz135.functionalstorage.world.EnderSavedData;
 import com.hrznstudio.titanium.event.handler.EventManager;
@@ -134,7 +135,7 @@ public class LinkingToolItem extends BasicItem {
                 return InteractionResult.SUCCESS;
             }
         }
-        if (blockEntity instanceof DrawerControllerTile) {
+        if (blockEntity instanceof StorageControllerTile) {
             CompoundTag controller = new CompoundTag();
             controller.putInt("X", pos.getX());
             controller.putInt("Y", pos.getY());
@@ -147,9 +148,9 @@ public class LinkingToolItem extends BasicItem {
         } else if (blockEntity instanceof ControllableDrawerTile && stack.getOrCreateTag().contains(NBT_CONTROLLER)) {
             CompoundTag controllerNBT = stack.getOrCreateTag().getCompound(NBT_CONTROLLER);
             BlockEntity controller = level.getBlockEntity(new BlockPos(controllerNBT.getInt("X"), controllerNBT.getInt("Y"), controllerNBT.getInt("Z")));
-            if (controller instanceof DrawerControllerTile) {
+            if (controller instanceof StorageControllerTile) {
                 if (linkingMode == LinkingMode.SINGLE) {
-                    ((DrawerControllerTile) controller).addConnectedDrawers(linkingAction, pos);
+                    ((StorageControllerTile) controller).addConnectedDrawers(linkingAction, pos);
                     if (linkingAction == ActionMode.ADD){
                         context.getPlayer().displayClientMessage(new TextComponent("Linked drawer to the controller").setStyle(Style.EMPTY.withColor(linkingMode.color)), true);
                     }else {
@@ -160,7 +161,7 @@ public class LinkingToolItem extends BasicItem {
                         CompoundTag firstpos = stack.getOrCreateTag().getCompound(NBT_FIRST);
                         BlockPos firstPos = new BlockPos(firstpos.getInt("X"), firstpos.getInt("Y"), firstpos.getInt("Z"));
                         AABB aabb = new AABB(Math.min(firstPos.getX(), pos.getX()), Math.min(firstPos.getY(), pos.getY()), Math.min(firstPos.getZ(), pos.getZ()), Math.max(firstPos.getX(), pos.getX()) + 1, Math.max(firstPos.getY(), pos.getY()) + 1, Math.max(firstPos.getZ(), pos.getZ()) + 1);
-                        ((DrawerControllerTile) controller).addConnectedDrawers(linkingAction, getBlockPosInAABB(aabb).toArray(BlockPos[]::new));
+                        ((StorageControllerTile) controller).addConnectedDrawers(linkingAction, getBlockPosInAABB(aabb).toArray(BlockPos[]::new));
                         stack.getOrCreateTag().remove(NBT_FIRST);
                         if (linkingAction == ActionMode.ADD){
                             context.getPlayer().displayClientMessage(new TextComponent("Linked drawers to the controller").setStyle(Style.EMPTY.withColor(linkingMode.color)), true);
